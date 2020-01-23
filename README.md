@@ -1,6 +1,5 @@
 # Chinese Text Classification with CNN and RNN
 <b> Update (January 14, 2020)</b> Pytorch implementation of [Convolutional Neural Networks for Sentence Classification](https://arxiv.org/abs/1408.5882).
-
 <br/>
 
 <br/>
