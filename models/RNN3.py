@@ -16,7 +16,7 @@ class Config(object):
             dataset + '/data/class.txt').readlines()]
         self.vocab_path = dataset + '/data/vocab.pkl'
         self.save_path = dataset + '/saved_dict/' + self.model_name + '.ckpt'
-
+        self.log_path = dataset + '/log/' + self.model_name
         self.embedding_pretrained = torch.tensor(
             np.load(dataset + '/data/' + embedding)["embeddings"].astype('float32'))\
             if embedding != 'random' else None
@@ -26,14 +26,14 @@ class Config(object):
         self.require_improvement = 1000
         self.num_classes = len(self.class_list)
         self.n_vocab = 0
-        self.num_epochs = 25
+        self.num_epochs = 30
         self.batch_size = 128
-        self.pad_size = 25
+        self.pad_size = 50
         self.learning_rate = 1e-3
         self.embed = self.embedding_pretrained.size(1)\
             if self.embedding_pretrained is not None else 300
-        self.hidden_size = 128
-        self.num_layers = 2
+        self.hidden_size = 256
+        self.num_layers = 1
 
 
 
@@ -47,11 +47,15 @@ class Model(nn.Module):
             self.embedding = nn.Embedding(config.n_vocab, config.embed, padding_idx=config.n_vocab - 1)
         self.lstm = nn.LSTM(298, config.hidden_size, config.num_layers,
                             bidirectional=True, batch_first=True, dropout=config.dropout)
+        self.lstm2 = nn.LSTM(512, config.hidden_size, config.num_layers,
+                            bidirectional=True, batch_first=True, dropout=config.dropout)
         self.gru =nn.GRU(2*config.hidden_size,config.hidden_size, config.num_layers,
                                    batch_first=True,bidirectional=True,dropout=config.dropout)
         self.fc = nn.Linear(config.hidden_size * 2, config.num_classes)
         self.m = nn.Softmax(dim=1)
-        self.conv=nn.Conv2d(1, 1, (3, 3))
+        self.loss_fn =nn.MSELoss(reduction='sum')
+        self.conv=nn.Conv2d(1,16, (3, 3))
+        self.s = nn.Sigmoid()
 
     def forward(self, x):
         x, _ = x
@@ -60,10 +64,14 @@ class Model(nn.Module):
         out = out.unsqueeze(1)
         out =self.conv(out)#torch.Size([128, 1, 24, 292])
         out = out.squeeze(1)
+        print(out.size())
         out, hid = self.lstm(out)#torch.Size([128, 32, 256])
+        # out, hid = self.lstm2(out)  # ([128, 32, 256])
         # out, hid =self.gru(out)#([128, 32, 256])
+        self.dropout = nn.Dropout(0.5)
         out = self.fc(out[:, -1, :])  # 句子最后时刻的 hidden state
-        out = self.m(out)#128,60
+        out = self.s(out)#128,60
+
         return out
 
   

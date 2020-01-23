@@ -32,11 +32,12 @@ def train(config, model, train_iter, dev_iter, test_iter):
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
 
     # 学习率指数衰减，每次epoch：学习率 = gamma * 学习率
-    # scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
+    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
     total_batch = 0
     dev_best_loss = float('inf')
     # last_improve = 0  # 记录上次验证集loss下降的batch数
     flag = False  # 记录是否很久没有效果提升
+    writer = SummaryWriter(log_dir=config.log_path + '/' + time.strftime('%m-%d_%H.%M', time.localtime()))
     for epoch in range(config.num_epochs):
         print('Epoch [{}/{}]'.format(epoch + 1, config.num_epochs))
         # scheduler.step()
@@ -73,6 +74,7 @@ def train(config, model, train_iter, dev_iter, test_iter):
             #     break
         if flag:
             break
+    writer.close()
     test(config, model, test_iter)
 
 
@@ -99,7 +101,6 @@ def evaluate(config, model, data_iter, test=False):
     labels_all = np.array([], dtype=int)
     with torch.no_grad():
         for texts, labels in data_iter:
-            # print(texts)
             outputs = model(texts)
             loss = F.cross_entropy(outputs, labels)
             loss_total += loss

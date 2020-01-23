@@ -1,10 +1,12 @@
-import torch
-import numpy as np
 import argparse
-from dataprepare import build_dataset, build_iterator
-from sklearn import metrics
 from importlib import import_module
+
+import numpy as np
+import torch
 import torch.nn.functional as F
+from sklearn import metrics
+
+from dataprepare import build_dataset, build_iterator
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model',default='CNN3', type=str, help='choose a model: CNN3,RNN2,RNN3')#, required=True
