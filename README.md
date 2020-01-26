@@ -1,7 +1,6 @@
 # Chinese Text Classification with CNN and RNN
 <b> Update (January 23, 2020)</b> Pytorch implementation of [Convolutional Neural Networks for Sentence Classification](https://arxiv.org/abs/1408.5882).
 
-After opening a news website and choose their mood after reading the page, is there any relationship between **people's mood** and **the short paragraph at the beginning or end** of the news? 
 <br/>
 
 <br/>
