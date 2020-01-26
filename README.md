@@ -1,6 +1,7 @@
 # Chinese Text Classification with CNN and RNN
 <b> Update (January 23, 2020)</b> Pytorch implementation of [Convolutional Neural Networks for Sentence Classification](https://arxiv.org/abs/1408.5882).
 
+After opening a news website and choosing the mood as a result of reading the page, is there any relationship between **people's mood** and **different parts** of the news? 
 <br/>
 
 <br/>
@@ -30,13 +31,13 @@ sklearn
 ### Getting Data and Pretrained Word2vec
 Data: 
 
-Some news in www.sina.com.cn had people's emotional vote after reading the whole news or part of the news.
+Some news contained people's emotional vote after reading the whole news or part of the news.
 
 There were 6 choice of mood to choose : **Love, Fear, Joy, Sadness, Surprise, Anger**.
 
-**4500 News and its emotional label** (choice of mood with more than 40% share & the second largest number of choice is less than 80% of the largest) were collected in 2017.
+**News and its emotional label** were collected from websites.
 
-**The first 50 words** of these news are cut out as train data and test data.
+**A part(now only shows the beginning of the news)** of these news are cut out as train data and test data.
 
 *Pretrainded Word2vec: *
 
